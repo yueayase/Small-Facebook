@@ -26,7 +26,7 @@ const Title = styled.h1`
 
 const Paragraph = styled.p`
     font-weight: 400;
-    font-size: 18px;
+    font-size: 24px;
 `;
 
 const Card = styled.div`
@@ -79,6 +79,59 @@ const SpaceStyle = {
     margin: '8px 16px'
 };
 
+const ModalHeaderStyle = styled.div`
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+`;
+
+const TitleCloseBtnGroupStyle = styled.div`
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+`;
+
+const SignUpHeaderTitleStyle = styled.h1`
+    font-size: 32px;
+    font-weight: 800;
+    margin: 0;
+`;
+
+const SignUpHeaderParagraphStyle = styled.p`
+    color: #606770;
+    font-size: 16px;
+    margin: 0;
+`;
+
+const SignUpFormCloseBtnStyle = {
+    fontSize: '32px', 
+    border: 'none', 
+    background: 'none'
+};
+
+const CommentStyle = styled.p`
+    color: #606770;
+    font-size: 14px;
+    padding-left: 0;
+`;
+
+const SignUpButtonCenter = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+`;
+
+const GenderRadioStyle = {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    border: '1px solid #dee2e6',
+    borderRadius: '4px', 
+    margin: '8px',
+    padding: '8px'
+};
+
 const DropDownListYear = () => {
     const date = new Date();
     const year = date.getFullYear();
@@ -122,46 +175,82 @@ const DropDownListDay = () => {
     );
 };
 
-const GenderRadio = () => {
+const DropDownListGenderAlias = () => {
     return (
-        <div className='row'>
-            <div className='col-lg-4'>
-                <Form.Check reverse type="radio" label="女性" name="gender" />
-            </div>
-            <div className='col-lg-4'>
-                <Form.Check reverse type="radio" label="男性" name="gender" />
-            </div>
-            <div className='col-lg-4'>
-                <Form.Check reverse type="radio" label="自訂" name="gender" />
-            </div>
+        <div class="row" style={{padding: '8px 12px'}}>
+            <Form.Select>
+                <option>選擇人稱代名詞</option>
+                <option>她: 「祝她生日快樂！」</option>
+                <option>他: 「祝他生日快樂！」</option>
+                <option>他們: 「祝他們生日快樂！」</option>
+            </Form.Select>
+            <CommentStyle>你的人稱代名詞會向所有人顯示。</CommentStyle>
+            <Form.Control type="text" placeholder="性別（選填）" />
         </div>
     );
 };
 
-const SignUpButtonCenter = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-`;
+const GenderRadio = () => {
+    const [show, setShow] = useState(false);
+
+    return (
+        <Form.Group className="mb-3">
+            <Form.Label>性別</Form.Label>
+            <div className='row'>
+                <div className='col-lg-4' style={GenderRadioStyle}>
+                    <Form.Check 
+                        reverse 
+                        type="radio" 
+                        label="女性" 
+                        name="gender" 
+                        value="female"
+                        onChange={() => setShow(false)}
+                    />
+                </div>
+                <div className='col-lg-4' style={GenderRadioStyle}>
+                    <Form.Check 
+                        reverse 
+                        type="radio" 
+                        label="男性" 
+                        name="gender" 
+                        value="male" 
+                        onChange={() => setShow(false)}
+                    />
+                </div>
+                <div className='col-lg-4' style={GenderRadioStyle}>
+                    <Form.Check 
+                        reverse 
+                        type="radio" 
+                        label="自訂" 
+                        name="gender" 
+                        value="other"
+                        onChange={() => setShow(true)}
+                    />
+                </div>
+            </div>
+            {show && <DropDownListGenderAlias />}
+        </Form.Group>
+    );
+};
 
 const SignUpForm = ({show, handleClose}) => {
     return (
         <Modal show={show}>
             <Modal.Header>
-                <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
-                    <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <h1 style={{ margin: 0 }}>註冊</h1>
+                <ModalHeaderStyle>
+                    <TitleCloseBtnGroupStyle>
+                        <SignUpHeaderTitleStyle>註冊</SignUpHeaderTitleStyle>
                         <button type="button" 
                             class="close"
                             data-dismiss="modal"
                             onClick={handleClose}
-                            style={{fontSize: '32px', border: 'none', background: 'none'}}
+                            style={SignUpFormCloseBtnStyle}
                         >
                             ×
                         </button>
-                    </div>
-                    <p style={{ margin: 0 }}>快速又簡單。</p>
-                </div>
+                    </TitleCloseBtnGroupStyle>
+                    <SignUpHeaderParagraphStyle>快速又簡單。</SignUpHeaderParagraphStyle>
+                </ModalHeaderStyle>
             </Modal.Header>
             <Modal.Body>
                 <Form>
@@ -193,21 +282,19 @@ const SignUpForm = ({show, handleClose}) => {
                         </div>
                     </Form.Group>
 
-                    <Form.Group className="mb-3">
-                        <Form.Label>性別</Form.Label>
-                        <GenderRadio />
-                    </Form.Group>
+                    
+                    <GenderRadio />
 
                     <Form.Group className="mb-3">
-                        <p>
+                        <CommentStyle>
                             使用我們服務的用戶可能上傳了你的聯絡資料到 Facebook。 
                             <Link>瞭解詳情。</Link>
-                        </p>
+                        </CommentStyle>
 
-                        <p>
+                        <CommentStyle>
                             點擊「註冊」即表示你同意我們的<Link>《服務條款》</Link>、<Link>《隱私政策》</Link>和 
-                            <Link>《Cookie 政策》</Link>。你可能會收到我們的簡訊通知，而且可以隨時選擇停止接收
-                        </p>
+                            <Link>《Cookie 政策》</Link>。你可能會收到我們的簡訊通知，而且可以隨時選擇停止接收。
+                        </CommentStyle>
                     </Form.Group>
                     <SignUpButtonCenter>
                         <Button variant="success" style={CreateNewAccountButtonStyle}>註冊</Button>
