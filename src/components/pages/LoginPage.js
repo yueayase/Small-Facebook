@@ -1,56 +1,30 @@
 import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import styled from 'styled-components';
+//import styled from 'styled-components';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import { Link } from 'react-router-dom';
+import { 
+    Container, 
+    MoveToCenter,
+    Title,
+    Paragraph,
+    Card,
+    LoginFormCenter,
+    ButtonLinkGroup,
+    LineStyle,
+    ModalHeaderStyle,
+    TitleCloseBtnGroupStyle,
+    SignUpHeaderTitleStyle,
+    SignUpHeaderParagraphStyle,
+    CommentStyle,
+    SignUpButtonCenter,
+    FormCheckStyle
+} from './styles/LoginPageStyled';
 
-const Container = styled.div`
-    height: 100vh;
-    background-color: #f0f2f5;
-`;
-
-const MoveToCenter = styled.div`
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-`;
-
-const Title = styled.h1`
-    color: #0866ff;
-    font-weight: 800;
-    font-size: 56px;
-`;
-
-const Paragraph = styled.p`
-    font-weight: 400;
-    font-size: 24px;
-`;
-
-const Card = styled.div`
-    width: 600px;
-    height: 480px;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 3px 30px rgba(0, 0, 0, 0.3);
-`;
-
-const LoginFormCenter = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-    margin-bottom: 32px;
-`;
-
-
-const ButtonLinkGroup = styled.div`
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-`;
 
 const LoginButtonStyle = {
     width: '100%',
@@ -68,41 +42,9 @@ const CreateNewAccountButtonStyle = {
     padding: '8px'
 };
 
-const LineStyle = styled.div`
-    width: 100%;
-    height: 1px;
-    border-bottom: solid 1px #dadde1;
-    margin: 20px 16px;
-`;
-
 const SpaceStyle = {
     margin: '8px 16px'
 };
-
-const ModalHeaderStyle = styled.div`
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-`;
-
-const TitleCloseBtnGroupStyle = styled.div`
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-`;
-
-const SignUpHeaderTitleStyle = styled.h1`
-    font-size: 32px;
-    font-weight: 800;
-    margin: 0;
-`;
-
-const SignUpHeaderParagraphStyle = styled.p`
-    color: #606770;
-    font-size: 16px;
-    margin: 0;
-`;
 
 const SignUpFormCloseBtnStyle = {
     fontSize: '32px', 
@@ -110,27 +52,12 @@ const SignUpFormCloseBtnStyle = {
     background: 'none'
 };
 
-const CommentStyle = styled.p`
-    color: #606770;
-    font-size: 14px;
-    padding-left: 0;
-`;
-
-const SignUpButtonCenter = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-`;
-
 const GenderRadioStyle = {
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    border: '1px solid #dee2e6',
-    borderRadius: '4px', 
-    margin: '8px',
-    padding: '8px'
+    justifyContent: 'space-between'
 };
+
 
 const DropDownListYear = () => {
     const date = new Date();
@@ -177,7 +104,7 @@ const DropDownListDay = () => {
 
 const DropDownListGenderAlias = () => {
     return (
-        <div class="row" style={{padding: '8px 12px'}}>
+        <Row style={{padding: '12px 12px'}}>
             <Form.Select>
                 <option>選擇人稱代名詞</option>
                 <option>她: 「祝她生日快樂！」</option>
@@ -186,7 +113,7 @@ const DropDownListGenderAlias = () => {
             </Form.Select>
             <CommentStyle>你的人稱代名詞會向所有人顯示。</CommentStyle>
             <Form.Control type="text" placeholder="性別（選填）" />
-        </div>
+        </Row>
     );
 };
 
@@ -196,9 +123,9 @@ const GenderRadio = () => {
     return (
         <Form.Group className="mb-3">
             <Form.Label>性別</Form.Label>
-            <div className='row'>
-                <div className='col-lg-4' style={GenderRadioStyle}>
-                    <Form.Check 
+            <Row lg={3}>
+                <Col style={GenderRadioStyle}>
+                    <FormCheckStyle 
                         reverse 
                         type="radio" 
                         label="女性" 
@@ -206,9 +133,9 @@ const GenderRadio = () => {
                         value="female"
                         onChange={() => setShow(false)}
                     />
-                </div>
-                <div className='col-lg-4' style={GenderRadioStyle}>
-                    <Form.Check 
+                </Col>
+                <Col style={GenderRadioStyle}>
+                    <FormCheckStyle 
                         reverse 
                         type="radio" 
                         label="男性" 
@@ -216,9 +143,9 @@ const GenderRadio = () => {
                         value="male" 
                         onChange={() => setShow(false)}
                     />
-                </div>
-                <div className='col-lg-4' style={GenderRadioStyle}>
-                    <Form.Check 
+                </Col>
+                <Col style={GenderRadioStyle}>
+                    <FormCheckStyle
                         reverse 
                         type="radio" 
                         label="自訂" 
@@ -226,8 +153,8 @@ const GenderRadio = () => {
                         value="other"
                         onChange={() => setShow(true)}
                     />
-                </div>
-            </div>
+                </Col>
+            </Row>
             {show && <DropDownListGenderAlias />}
         </Form.Group>
     );
@@ -255,14 +182,14 @@ const SignUpForm = ({show, handleClose}) => {
             <Modal.Body>
                 <Form>
                     <Form.Group className="mb-3">
-                        <div className='row'>
-                            <div className='col-lg-6'>
+                        <Row>
+                            <Col lg={6}>
                                 <Form.Control type="text" placeholder="姓氏" />
-                            </div>
-                            <div className='col-lg-6'>
+                            </Col>
+                            <Col lg={6}>
                                 <Form.Control type="text" placeholder="名字" />
-                            </div>
-                        </div>
+                            </Col>
+                        </Row>
                     </Form.Group>
 
                     <Form.Group className="mb-3">
@@ -275,11 +202,11 @@ const SignUpForm = ({show, handleClose}) => {
                     
                     <Form.Group className="mb-3">
                         <Form.Label>出生日期</Form.Label>
-                        <div className='row'>
-                            <div className="col-lg-4"><DropDownListYear /></div>
-                            <div className="col-lg-4"><DropDownListMonth /></div>
-                            <div className="col-lg-4"><DropDownListDay /></div>
-                        </div>
+                        <Row>
+                            <Col lg={4}><DropDownListYear /></Col>
+                            <Col lg={4}><DropDownListMonth /></Col>
+                            <Col lg={4}><DropDownListDay /></Col>
+                        </Row>
                     </Form.Group>
 
                     
@@ -346,14 +273,14 @@ const LoginForm = () => {
 const LoginPage = () => {
     return (
         <Container>
-            <div className='row h-100' style={{height: '100%'}}>
-                <div className='col-lg-6 h-100'>
+            <Row className='h-100'>
+                <Col lg={6} className='h-100'>
                     <MoveToCenter>
                         <Title>facebook</Title>
                         <Paragraph>Facebook，讓你和親朋好友保持聯繫，隨時分享生活中的每一刻。</Paragraph>
                     </MoveToCenter>
-                </div>
-                <div className='col-lg-6 h-100'>
+                </Col>
+                <Col lg={6} className='h-100'>
                     <MoveToCenter>
                         <Card>
                             <LoginForm />
@@ -362,8 +289,8 @@ const LoginPage = () => {
                             </div>
                         </Card>
                     </MoveToCenter>
-                </div>
-            </div>
+                </Col>
+            </Row>
         </Container>
     );
 };
