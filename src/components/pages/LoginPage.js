@@ -14,6 +14,7 @@ import {
     Paragraph,
     Card,
     LoginFormCenter,
+    FormControlInputStyle,
     ButtonLinkGroup,
     LineStyle,
     ModalHeaderStyle,
@@ -28,18 +29,22 @@ import {
 
 const LoginButtonStyle = {
     width: '100%',
-    margin: 'auto'
+    margin: 'auto',
+    fontSize: '24px',
+    padding: '8px'
 };
 
 const ForgotPasswordLinkStyle = {
     margin: 'auto',
-    padding: '16px 0'
+    padding: '16px 0',
+    fontSize: '18px'
 };
 
 const CreateNewAccountButtonStyle = {
     width: '33.333%',
     margin: 'auto',
-    padding: '8px'
+    fontSize: '18px',
+    padding: '12px'
 };
 
 const SpaceStyle = {
@@ -184,20 +189,20 @@ const SignUpForm = ({show, handleClose}) => {
                     <Form.Group className="mb-3">
                         <Row>
                             <Col lg={6}>
-                                <Form.Control type="text" placeholder="姓氏" />
+                                <FormControlInputStyle type="text" placeholder="姓氏" />
                             </Col>
                             <Col lg={6}>
-                                <Form.Control type="text" placeholder="名字" />
+                                <FormControlInputStyle type="text" placeholder="名字" />
                             </Col>
                         </Row>
                     </Form.Group>
 
                     <Form.Group className="mb-3">
-                        <Form.Control type="text" placeholder="手機號碼或電子郵件" />
+                        <FormControlInputStyle type="text" placeholder="手機號碼或電子郵件" />
                     </Form.Group>
 
                     <Form.Group className="mb-3">
-                        <Form.Control type="text" placeholder="設定密碼" />
+                        <FormControlInputStyle type="text" placeholder="設定密碼" />
                     </Form.Group>
                     
                     <Form.Group className="mb-3">
@@ -239,12 +244,12 @@ const LoginForm = () => {
     return (
         <LoginFormCenter>
             <Form style={{width: '100%', paddingRight: '32px'}}>
-                <Form.Control 
+                <FormControlInputStyle 
                     type="text" 
                     placeholder="電子郵件地址或手機號碼"
                     style={SpaceStyle}
                 />
-                <Form.Control 
+                <FormControlInputStyle 
                     type="password" 
                     placeholder="密碼"
                     style={SpaceStyle}

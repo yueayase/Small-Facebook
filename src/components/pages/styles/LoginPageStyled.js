@@ -40,6 +40,10 @@ export const LoginFormCenter = styled.div`
     margin-bottom: 32px;
 `;
 
+export const FormControlInputStyle = styled(Form.Control)`
+    padding: 12px 8px;
+`;
+
 export const ButtonLinkGroup = styled.div`
     display: flex;
     flex-direction: column;
