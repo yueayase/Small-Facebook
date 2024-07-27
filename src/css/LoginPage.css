@@ -1,6 +1,9 @@
-.to_center {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+.tooltip.bs-tooltip-bottom .tooltip-arrow::before {
+    border-bottom-color: #dc3545; /* Adjust tooltip arrow color */
+}
+.tooltip-inner {
+    background-color: #dc3545; /* Adjust tooltip background color */
+    color: #fff; /* Adjust tooltip text color */
+    border-radius: 5px; /* Rounded corners for the tooltip box */
+    padding: 10px; /* Padding inside the tooltip */
 }

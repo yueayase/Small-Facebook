@@ -44,6 +44,26 @@ export const FormControlInputStyle = styled(Form.Control)`
     padding: 12px 8px;
 `;
 
+export const FormControlFeedbackStyle = styled(Form.Control.Feedback)`
+    font-size: 14px;
+    color: #fff;
+    background-color: #dc3545;
+    border-radius: 4px;
+    padding: 8px;
+    display: ${({ displayTooltip }) => (displayTooltip ? 'inline-block' : 'none')};
+
+    &:before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: -8px; /* adjust according to your layout */
+        transform: translateX(100%) translateY(${({ arrow_scale }) => arrow_scale}) rotate(270deg);
+        border-width: 14px;
+        border-style: solid;
+        border-color: transparent transparent transparent #dc3545;
+    }
+`;
+
 export const ButtonLinkGroup = styled.div`
     display: flex;
     flex-direction: column;
