@@ -66,6 +66,135 @@ const GenderRadioStyle = {
     justifyContent: 'space-between'
 };
 
+const DropDownListYear = () => {
+    const date = new Date();
+    const year = date.getFullYear();
+    const options = [];
+
+    for(let y = year; y >= 1905; y--) {
+        options.push(y);
+    }
+
+    return (
+        <Form.Select defaultValue={year}>
+            {options.map((y, index) => <option value={y}>{y}</option>)}
+        </Form.Select>
+    );
+};
+
+const DropDownListMonth = () => {
+    const date = new Date();
+    const month = date.getMonth() + 1;
+    const options = Array.from(Array(12).keys()).map((m, index) => m + 1);
+
+    return (
+        <Form.Select defaultValue={month}>
+            {options.map((m, index) => <option value={m}>{m}月</option>)}
+        </Form.Select>
+    );
+};
+
+const DropDownListDay = () => {
+    const date = new Date();
+    const day = date.getDate();
+    const options = Array.from(Array(31).keys()).map((m, index) => m + 1);
+
+    return (
+        <Form.Select defaultValue={day}>
+            {options.map((d, index) => <option value={d}>{d}</option>)}
+        </Form.Select>
+    );
+};
+
+const DropDownListGenderAlias = ({ setFieldValue, setFieldTouched, values, touched, errors }) => {
+    return (
+        <Row style={{padding: '12px 12px'}}>
+            <Form.Select 
+                name="genderAlias"
+                value={values.genderAlias} 
+                onChange={e => setFieldValue("genderAlias", e.target.value)}
+                onBlur={() => setFieldTouched("genderAlias", true)}
+                isInvalid={touched.genderAlias && !!errors.genderAlias}
+            >
+                <option value={0} disabled>選擇人稱代名詞</option>
+                <option value={1}>她: 「祝她生日快樂！」</option>
+                <option value={2}>他: 「祝他生日快樂！」</option>
+                <option value={3}>他們: 「祝他們生日快樂！」</option>
+            </Form.Select>
+            <FormControlFeedbackStyle 
+                type="invalid" 
+                tooltip 
+                displayTooltip={touched.genderAlias && !!errors.genderAlias}
+                arrow_scale="-150%"
+                className="position-relative"
+            >
+                請輸入你的人稱代名詞。
+            </FormControlFeedbackStyle>
+            <CommentStyle>你的人稱代名詞會向所有人顯示。</CommentStyle>
+            <Form.Control type="text" placeholder="性別（選填）" />
+        </Row>
+    );
+};
+
+const GenderRadio = ({ setFieldValue, setFieldTouched, values, touched, errors }) => {
+    const [show, setShow] = useState(false);
+
+    return (
+        <Form.Group className="mb-3">
+            <Form.Label>性別</Form.Label>
+            <Row lg={3}>
+                <Col style={GenderRadioStyle}>
+                    <FormCheckStyle 
+                        reverse 
+                        type="radio" 
+                        label="女性" 
+                        name="gender" 
+                        value="female"
+                        onChange={() => {
+                            setShow(false);
+                            setFieldValue("gender", "female");
+                        }}
+                    />
+                </Col>
+                <Col style={GenderRadioStyle}>
+                    <FormCheckStyle 
+                        reverse 
+                        type="radio" 
+                        label="男性" 
+                        name="gender" 
+                        value="male" 
+                        onChange={() => {
+                            setShow(false);
+                            setFieldValue("gender", "male");
+                        }}
+                    />
+                </Col>
+                <Col style={GenderRadioStyle}>
+                    <FormCheckStyle
+                        reverse 
+                        type="radio" 
+                        label="自訂" 
+                        name="gender" 
+                        value="other"
+                        onChange={() => {
+                            setShow(true);
+                            setFieldValue("gender", "other");
+                        }}
+                    />
+                </Col>
+            </Row>
+            {show && 
+            <DropDownListGenderAlias
+                setFieldValue={setFieldValue} 
+                setFieldTouched={setFieldTouched} 
+                values={values} 
+                touched={touched} 
+                errors={errors}
+            />}
+        </Form.Group>
+    );
+};
+
 const ModalBodyForm = () => {
     const { Formik } = formik;
 
@@ -87,7 +216,8 @@ const ModalBodyForm = () => {
             .matches(
                 /^([A-Za-z0-9]|(?=.*\w)).{6,}$/, 
                 "請輸入含有數字、英文字母和標點符號（如!或&）的密碼組合，且至少由6個字元組成"
-            )
+            ),
+        genderAlias: yup.number().required("請輸入你的人稱代名詞。").min(1, "請輸入你的人稱代名詞。")
     });
 
     return (
@@ -98,10 +228,20 @@ const ModalBodyForm = () => {
                 firstName: '',
                 lastName: '',
                 EmailOrCellPhoneNumber: '',
-                password: ''
+                password: '',
+                gender: '',
+                genderAlias: 0
             }}
         >
-            {({ handleSubmit, handleChange, handleBlur, values, touched, errors }) => (
+            {({ 
+                handleSubmit, 
+                handleChange, 
+                handleBlur, 
+                setFieldValue,
+                setFieldTouched,
+                values, 
+                touched, 
+                errors }) => (
                 <Form noValidate onSubmit={handleSubmit}>
                     <Row className="mb-3">
                         <Form.Group as={Col} lg={6} className="position-relative">
@@ -192,8 +332,14 @@ const ModalBodyForm = () => {
                             <Col lg={4}><DropDownListDay /></Col>
                         </Row>
                     </Form.Group>
-        
-                    <GenderRadio />
+                    
+                    <GenderRadio  
+                        setFieldValue={setFieldValue} 
+                        setFieldTouched={setFieldTouched} 
+                        values={values}
+                        touched={touched}
+                        errors={errors}
+                        />
         
                     <Form.Group className="mb-3">
                         <CommentStyle>
@@ -212,107 +358,6 @@ const ModalBodyForm = () => {
                 </Form>
             )}
         </Formik>
-    );
-};
-
-const DropDownListYear = () => {
-    const date = new Date();
-    const year = date.getFullYear();
-    const options = [];
-
-    for(let y = year; y >= 1905; y--) {
-        options.push(y);
-    }
-
-    return (
-        <Form.Select>
-            <option>{year}</option>
-            {options.map((y, index) => <option value={y}>{y}</option>)}
-        </Form.Select>
-    );
-};
-
-const DropDownListMonth = () => {
-    const date = new Date();
-    const month = date.getMonth() + 1;
-    const options = Array.from(Array(12).keys()).map((m, index) => m + 1);
-
-    return (
-        <Form.Select>
-            <option>{month}月</option>
-            {options.map((m, index) => <option value={m}>{m}月</option>)}
-        </Form.Select>
-    );
-};
-
-const DropDownListDay = () => {
-    const date = new Date();
-    const day = date.getDate();
-    const options = Array.from(Array(31).keys()).map((m, index) => m + 1);
-
-    return (
-        <Form.Select>
-            <option>{day}</option>
-            {options.map((d, index) => <option value={d}>{d}</option>)}
-        </Form.Select>
-    );
-};
-
-const DropDownListGenderAlias = () => {
-    return (
-        <Row style={{padding: '12px 12px'}}>
-            <Form.Select>
-                <option>選擇人稱代名詞</option>
-                <option>她: 「祝她生日快樂！」</option>
-                <option>他: 「祝他生日快樂！」</option>
-                <option>他們: 「祝他們生日快樂！」</option>
-            </Form.Select>
-            <CommentStyle>你的人稱代名詞會向所有人顯示。</CommentStyle>
-            <Form.Control type="text" placeholder="性別（選填）" />
-        </Row>
-    );
-};
-
-const GenderRadio = () => {
-    const [show, setShow] = useState(false);
-
-    return (
-        <Form.Group className="mb-3">
-            <Form.Label>性別</Form.Label>
-            <Row lg={3}>
-                <Col style={GenderRadioStyle}>
-                    <FormCheckStyle 
-                        reverse 
-                        type="radio" 
-                        label="女性" 
-                        name="gender" 
-                        value="female"
-                        onChange={() => setShow(false)}
-                    />
-                </Col>
-                <Col style={GenderRadioStyle}>
-                    <FormCheckStyle 
-                        reverse 
-                        type="radio" 
-                        label="男性" 
-                        name="gender" 
-                        value="male" 
-                        onChange={() => setShow(false)}
-                    />
-                </Col>
-                <Col style={GenderRadioStyle}>
-                    <FormCheckStyle
-                        reverse 
-                        type="radio" 
-                        label="自訂" 
-                        name="gender" 
-                        value="other"
-                        onChange={() => setShow(true)}
-                    />
-                </Col>
-            </Row>
-            {show && <DropDownListGenderAlias />}
-        </Form.Group>
     );
 };
 
