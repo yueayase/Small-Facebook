@@ -8,6 +8,7 @@ import Modal from 'react-bootstrap/Modal';
 import { Link } from 'react-router-dom';
 import * as formik from 'formik';
 import * as yup from 'yup';
+import axios from 'axios';
 
 import { 
     Container, 
@@ -66,7 +67,7 @@ const GenderRadioStyle = {
     justifyContent: 'space-between'
 };
 
-const DropDownListYear = () => {
+const DropDownListYear = ({ setFieldValue, values }) => {
     const date = new Date();
     const year = date.getFullYear();
     const options = [];
@@ -76,31 +77,53 @@ const DropDownListYear = () => {
     }
 
     return (
-        <Form.Select defaultValue={year}>
+        <Form.Select 
+            defaultValue={year}
+            name="year"
+            value={values.year}
+            onChange={e => setFieldValue("year", e.target.value)}
+        >
             {options.map((y, index) => <option value={y}>{y}</option>)}
         </Form.Select>
     );
 };
 
-const DropDownListMonth = () => {
+const DropDownListMonth = ({ setFieldValue, values }) => {
     const date = new Date();
     const month = date.getMonth() + 1;
     const options = Array.from(Array(12).keys()).map((m, index) => m + 1);
 
     return (
-        <Form.Select defaultValue={month}>
+        <Form.Select 
+            defaultValue={month}
+            name="month"
+            value={values.month}
+            onChange={e => setFieldValue("month", e.target.value)}
+        >
             {options.map((m, index) => <option value={m}>{m}月</option>)}
         </Form.Select>
     );
 };
 
-const DropDownListDay = () => {
+const DropDownListDay = ({ setFieldValue, values }) => {
     const date = new Date();
+    const year = values.year;
+    const month = values.month;
     const day = date.getDate();
-    const options = Array.from(Array(31).keys()).map((m, index) => m + 1);
+    const days = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+
+    if ((year % 4 === 0 && year % 100 !== 0) || year % 400 === 0)
+        days[1]++;
+
+    const options = Array.from(Array(days[month-1]).keys()).map((m, index) => m + 1);
 
     return (
-        <Form.Select defaultValue={day}>
+        <Form.Select 
+            defaultValue={day}
+            name="day"
+            value={values.day}
+            onChange={e => setFieldValue("day", e.target.value)}
+        >
             {options.map((d, index) => <option value={d}>{d}</option>)}
         </Form.Select>
     );
@@ -131,7 +154,7 @@ const DropDownListGenderAlias = ({ setFieldValue, setFieldTouched, values, touch
                 請輸入你的人稱代名詞。
             </FormControlFeedbackStyle>
             <CommentStyle>你的人稱代名詞會向所有人顯示。</CommentStyle>
-            <Form.Control type="text" placeholder="性別（選填）" />
+            <Form.Control type="text" placeholder="性別（選填）" onChange={(e) => setFieldValue("gender", e.target.value)}/>
         </Row>
     );
 };
@@ -153,6 +176,7 @@ const GenderRadio = ({ setFieldValue, setFieldTouched, values, touched, errors }
                         onChange={() => {
                             setShow(false);
                             setFieldValue("gender", "female");
+                            setFieldValue("genderAlias", 1);
                         }}
                     />
                 </Col>
@@ -166,6 +190,7 @@ const GenderRadio = ({ setFieldValue, setFieldTouched, values, touched, errors }
                         onChange={() => {
                             setShow(false);
                             setFieldValue("gender", "male");
+                            setFieldValue("genderAlias", 2);
                         }}
                     />
                 </Col>
@@ -183,6 +208,14 @@ const GenderRadio = ({ setFieldValue, setFieldTouched, values, touched, errors }
                     />
                 </Col>
             </Row>
+            <FormControlFeedbackStyle 
+                type="invalid" 
+                tooltip 
+                displayTooltip={touched.gender && !!errors.gender}
+                arrow_scale="-150%"
+            >
+                {errors.gender}
+            </FormControlFeedbackStyle>
             {show && 
             <DropDownListGenderAlias
                 setFieldValue={setFieldValue} 
@@ -195,7 +228,21 @@ const GenderRadio = ({ setFieldValue, setFieldTouched, values, touched, errors }
     );
 };
 
-const ModalBodyForm = () => {
+// TODO: change default styles
+const ErrorDialog = ({showErrorDialog, setShowErrorDialog}) => {
+    return (
+        <Modal show={showErrorDialog} onHide={() => setShowErrorDialog(false)}>
+            <Modal.Header closeButton>
+                <Modal.Title>註冊失敗!</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                <Paragraph>這可能是因為您輸入的手機號碼或是電子郵件地址已經有人註冊過了</Paragraph>
+            </Modal.Body>
+        </Modal>
+    );
+};
+
+const ModalBodyForm = ({ handleClose, setShowErrorDialog }) => {
     const { Formik } = formik;
 
     // test regular expression: https://regex101.com/
@@ -217,18 +264,46 @@ const ModalBodyForm = () => {
                 /^([A-Za-z0-9]|(?=.*\w)).{6,}$/, 
                 "請輸入含有數字、英文字母和標點符號（如!或&）的密碼組合，且至少由6個字元組成"
             ),
+        gender: yup.string().required("請選擇性別。你之後可以變更此資料的分享對象。"),
         genderAlias: yup.number().required("請輸入你的人稱代名詞。").min(1, "請輸入你的人稱代名詞。")
     });
+
+    // call restful api to send data to the backend 
+    const passDataToBackend = (values) => {
+        console.log("test line 259:", values);
+        const api_url = process.env.REACT_APP_API_BASE_URL + "/signup";
+
+        axios.post(api_url, {
+            name: `${values.firstName} ${values.lastName}`,
+            EmailOrCellPhoneNumber: values.EmailOrCellPhoneNumber,
+            password: values.password,
+            birthday: `${values.year}-${values.month}-${values.day}`,
+            gender: values.gender,
+            genderAlias: values.genderAlias
+        })
+        .then(res => {
+            handleClose();
+            setShowErrorDialog(false);
+            console.log(res);
+        })
+        .catch(err => {
+            setShowErrorDialog(true);
+            console.log(err.response.data.error);
+        });
+    };
 
     return (
         <Formik
             validationSchema={schema}
-            onSubmit={value => console.log(value)}
+            onSubmit={passDataToBackend} 
             initialValues={{
                 firstName: '',
                 lastName: '',
                 EmailOrCellPhoneNumber: '',
                 password: '',
+                year: new Date().getFullYear(),
+                month: new Date().getMonth() + 1,
+                day: new Date().getDate(),
                 gender: '',
                 genderAlias: 0
             }}
@@ -327,9 +402,15 @@ const ModalBodyForm = () => {
                     <Form.Group className="mb-3">
                         <Form.Label>出生日期</Form.Label>
                         <Row>
-                            <Col lg={4}><DropDownListYear /></Col>
-                            <Col lg={4}><DropDownListMonth /></Col>
-                            <Col lg={4}><DropDownListDay /></Col>
+                            <Col lg={4}>
+                                <DropDownListYear setFieldValue={setFieldValue} values={values} />
+                            </Col>
+                            <Col lg={4}>
+                                <DropDownListMonth setFieldValue={setFieldValue} values={values} />
+                            </Col>
+                            <Col lg={4}>
+                                <DropDownListDay setFieldValue={setFieldValue} values={values} />
+                            </Col>
                         </Row>
                     </Form.Group>
                     
@@ -339,7 +420,7 @@ const ModalBodyForm = () => {
                         values={values}
                         touched={touched}
                         errors={errors}
-                        />
+                    />
         
                     <Form.Group className="mb-3">
                         <CommentStyle>
@@ -362,8 +443,16 @@ const ModalBodyForm = () => {
 };
 
 const SignUpForm = ({show, handleClose}) => {
+    const [showErrorDialog, setShowErrorDialog] = useState(false);
+
     return (
         <Modal show={show}>
+            {showErrorDialog && 
+                <ErrorDialog 
+                    showErrorDialog={showErrorDialog} 
+                    setShowErrorDialog={setShowErrorDialog} 
+                />
+            }
             <Modal.Header>
                 <ModalHeaderStyle>
                     <TitleCloseBtnGroupStyle>
@@ -381,7 +470,7 @@ const SignUpForm = ({show, handleClose}) => {
                 </ModalHeaderStyle>
             </Modal.Header>
             <Modal.Body>
-                <ModalBodyForm />
+                <ModalBodyForm handleClose={handleClose} setShowErrorDialog={setShowErrorDialog}/>
             </Modal.Body>
         </Modal>
     );
