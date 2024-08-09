@@ -1,6 +1,6 @@
 import logo from './logo.svg';
-import GlobalStyle from './components/pages/styles/GlobalStyles';
-import LoginPage from './components/pages/LoginPage';
+import GlobalStyle from './styles/GlobalStyles';
+import LoginPage from './pages/LoginPage';
 import './App.css';
 
 function App() {
