@@ -100,26 +100,7 @@ const ModalBodyForm = ({ handleClose, setShowErrorDialog }) => {
                 errors }) => (
                 <Form noValidate onSubmit={handleSubmit}>
                     <Row className="mb-3">
-                        <Form.Group as={Col} lg={6} className="position-relative">
-                            <FormControlInputStyle 
-                                type="text" 
-                                name= "firstName" 
-                                value={values.firstName}
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                                isInvalid={touched.firstName && !!errors.firstName}
-                                placeholder="姓氏" 
-                            />
-                            <FormControlFeedbackStyle 
-                                type="invalid" 
-                                tooltip 
-                                displayTooltip={touched.firstName && !!errors.firstName}
-                                arrow_scale="-150%"
-                            >
-                                {errors.firstName}
-                            </FormControlFeedbackStyle>
-                        </Form.Group>
-                        <Form.Group as={Col} lg={6} className="position-relative">
+                    <Form.Group as={Col} lg={6} className="position-relative">
                              <FormControlInputStyle 
                                 type="text" 
                                 name="lastName"
@@ -127,7 +108,7 @@ const ModalBodyForm = ({ handleClose, setShowErrorDialog }) => {
                                 onChange={handleChange}
                                 onBlur={handleBlur}
                                 isInvalid={touched.lastName && !!errors.lastName}
-                                placeholder="名字" 
+                                placeholder="姓氏" 
                             />
                             <FormControlFeedbackStyle 
                                 type="invalid" 
@@ -138,6 +119,26 @@ const ModalBodyForm = ({ handleClose, setShowErrorDialog }) => {
                                 {errors.lastName}
                             </FormControlFeedbackStyle>
                         </Form.Group>
+                        <Form.Group as={Col} lg={6} className="position-relative">
+                            <FormControlInputStyle 
+                                type="text" 
+                                name= "firstName" 
+                                value={values.firstName}
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                isInvalid={touched.firstName && !!errors.firstName}
+                                placeholder="名字" 
+                            />
+                            <FormControlFeedbackStyle 
+                                type="invalid" 
+                                tooltip 
+                                displayTooltip={touched.firstName && !!errors.firstName}
+                                arrow_scale="-150%"
+                            >
+                                {errors.firstName}
+                            </FormControlFeedbackStyle>
+                        </Form.Group>
+                        
                     </Row>
         
                     <Form.Group className="mb-3">

@@ -36,6 +36,8 @@ const CreateNewAccountButtonStyle = {
 
 const LoginForm = () => {
     const [showSignUpForm, setShowSignUpForm] = useState(false);
+    const [cellPhoneOrEmailText, setCellPhoneOrEmailText] = useState("");
+    const [password, setPassword] = useState("");
     const handleClose = () => setShowSignUpForm(false);
 
     return (
@@ -44,15 +46,18 @@ const LoginForm = () => {
                 <FormControlInputStyle 
                     type="text" 
                     placeholder="電子郵件地址或手機號碼"
+                    onChange={(e) => setCellPhoneOrEmailText(e.target.value)}
                     style={SpaceStyle}
                 />
                 <FormControlInputStyle 
                     type="password" 
                     placeholder="密碼"
+                    onChange={(e) => setPassword(e.target.value)}
                     style={SpaceStyle}
                 />
                 <ButtonLinkGroup>
                     <Button 
+                        onClick={() => { console.log(cellPhoneOrEmailText); console.log(password); }}
                         style={{...LoginButtonStyle, ...SpaceStyle}}
                     >
                         登入
