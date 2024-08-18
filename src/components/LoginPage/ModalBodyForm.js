@@ -1,3 +1,5 @@
+import React, { useContext } from 'react';
+import AuthContext from '../../auth/AuthContext';
 import * as formik from 'formik';
 import * as yup from 'yup';
 import Form from 'react-bootstrap/Form';
@@ -25,6 +27,7 @@ const CreateNewAccountButtonStyle = {
 
 const ModalBodyForm = ({ handleClose, setShowErrorDialog }) => {
     const { Formik } = formik;
+    const { login } = useContext(AuthContext);
 
     // test regular expression: https://regex101.com/
     // Cell Phone Number : https://stackoverflow.com/questions/22378736/regex-for-mobile-number-validation
@@ -65,6 +68,7 @@ const ModalBodyForm = ({ handleClose, setShowErrorDialog }) => {
         .then(res => {
             handleClose();
             setShowErrorDialog(false);
+            login(values.EmailOrCellPhoneNumber, values.password);
             console.log(res);
         })
         .catch(err => {

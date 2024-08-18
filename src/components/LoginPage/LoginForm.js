@@ -1,14 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
+import AuthContext from '../../auth/AuthContext';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import SignUpForm from './SignUpForm';
 import { 
     LoginFormCenter, 
     FormControlInputStyle, 
     ButtonLinkGroup, 
     LineStyle 
 } from '../../styles/LoginPageStyled';
-import SignUpForm from './SignUpForm';
+
 
 const SpaceStyle = {
     margin: '8px 16px'
@@ -39,6 +41,25 @@ const LoginForm = () => {
     const [cellPhoneOrEmailText, setCellPhoneOrEmailText] = useState("");
     const [password, setPassword] = useState("");
     const handleClose = () => setShowSignUpForm(false);
+    const { login, isAuthenticated } = useContext(AuthContext);
+    const navigate = useNavigate();
+    const handleLogin = (cellPhoneOrEmailText, password) => {
+        login(cellPhoneOrEmailText, password)
+        .then(({ error_code }) => {
+            if (!error_code) {
+                console.log("Authentication success");
+            }
+            else if (error_code === 404){
+                navigate("/login", { replace: true, state: { error_code: error_code, username: ''} });
+            }
+            else if (error_code === 401) {
+                navigate("/login", { replace: true, state: { error_code: error_code, username: cellPhoneOrEmailText } });
+            }
+            else {
+                console.log(`error code ${error_code}`);
+            }
+        });
+    };
 
     return (
         <LoginFormCenter>
@@ -57,7 +78,7 @@ const LoginForm = () => {
                 />
                 <ButtonLinkGroup>
                     <Button 
-                        onClick={() => { console.log(cellPhoneOrEmailText); console.log(password); }}
+                        onClick={() => handleLogin(cellPhoneOrEmailText, password)}
                         style={{...LoginButtonStyle, ...SpaceStyle}}
                     >
                         登入

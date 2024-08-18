@@ -19,6 +19,19 @@ export const Title = styled.h1`
     font-size: 56px;
 `;
 
+export const LoginFailedTitle = styled.div`
+    color: #0866ff;
+    text-align: center;
+    font-weight: 800;
+    font-size: 56px;
+    padding-bottom: 16px;
+`;
+
+export const LoginFailedFormTitle = styled.h3`
+    text-align: center;
+    padding: 16px;
+`;
+
 export const Paragraph = styled.p`
     font-weight: 400;
     font-size: 24px;
