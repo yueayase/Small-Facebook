@@ -64,7 +64,8 @@ export const FormControlFeedbackStyle = styled(Form.Control.Feedback)`
     border-radius: 4px;
     padding: 8px;
     display: ${({ displayTooltip }) => (displayTooltip ? 'inline-block' : 'none')};
-
+    
+    /* display upward triangle */
     &:before {
         content: '';
         position: absolute;

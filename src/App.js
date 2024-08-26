@@ -4,6 +4,8 @@ import { AuthProvider } from './auth/AuthContext';
 import GlobalStyle from './styles/GlobalStyles';
 import HomePage from './pages/HomePage';
 import LoginFailedPage from './pages/LoginFailedPage';
+import UserProfile from './pages/UserProfile';
+import UserSettingPrivacy from './pages/UserSettingPrivacy';
 import './App.css';
 
 function App() {
@@ -12,8 +14,10 @@ function App() {
       <BrowserRouter>
         <GlobalStyle />
         <Routes>
-          <Route path="/" element={<HomePage />}></Route>
-          <Route path="/login" element={<LoginFailedPage />}></Route>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/login" element={<LoginFailedPage />} />
+          <Route path="/:user" element={<UserProfile />}/>
+          <Route path="/setting" element={<UserSettingPrivacy />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>
