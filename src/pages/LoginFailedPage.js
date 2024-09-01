@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import { Link } from 'react-router-dom';
@@ -28,8 +28,7 @@ const LoginFailedPage = () => {
     const [cellPhoneOrEmail, setcellPhoneOrEmail] = useState(username);
     const [password, setPassword] = useState("");
     const [currentError, setCurrentError] = useState(error_code);
-    const { login, isAuthenticated } = useContext(AuthContext);
-    const navigate = useNavigate();
+    const { login, isAuthenticated, navigate } = useContext(AuthContext);
 
     useEffect(() => {
         if (isAuthenticated) {

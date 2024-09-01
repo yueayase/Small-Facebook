@@ -10,8 +10,8 @@ import './App.css';
 
 function App() {
   return (
-    <AuthProvider>
-      <BrowserRouter>
+    <BrowserRouter>
+      <AuthProvider>
         <GlobalStyle />
         <Routes>
           <Route path="/" element={<HomePage />} />
@@ -19,8 +19,8 @@ function App() {
           <Route path="/:user" element={<UserProfile />}/>
           <Route path="/setting" element={<UserSettingPrivacy />} />
         </Routes>
-      </BrowserRouter>
-    </AuthProvider>
+      </AuthProvider>
+    </BrowserRouter>
   );
 }
 

@@ -1,17 +1,14 @@
 import React, { useContext } from "react";
 import AuthContext from "../auth/AuthContext";
-import Header from "../components/layout/Header";
+import DefaultLayout from "../components/layout/DefaultLayout";
+import ClearFix from "../common/ClearFix";
 
 const MainPage = () => {
-    const { logout } = useContext(AuthContext);
     return (
-        <div>
-            {/* Hello there.
-            <span style={{cursor: "pointer"}} onClick={() => logout()}>
-                登出
-            </span> */}
-            <Header />
-        </div>
+        <DefaultLayout>
+            <ClearFix />
+            Articles there.
+        </DefaultLayout>
     );
 };
 

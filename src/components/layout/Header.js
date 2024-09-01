@@ -161,7 +161,9 @@ const Header = () => {
                 </Col>
                 <Col lg={6}>
                     <HeaderMiddleStyle>
-                        <FontAwesomeIconStyle icon={fas.faHouseChimneyWindow} />
+                        <Link to="/">
+                            <FontAwesomeIconStyle icon={fas.faHouseChimneyWindow} />
+                        </Link>
                         <FontAwesomeIconStyle icon={fas.faUserGroup} />
                         <FontAwesomeIconStyle icon={fas.faUsersLine} />
                     </HeaderMiddleStyle>
