@@ -4,10 +4,10 @@ import DefaultLayout from "../components/layout/DefaultLayout";
 import ClearFix from "../common/ClearFix";
 
 const UserSettingPrivacy = () => {
-    const { isAuthenticated, navigate } = useContext(AuthContext);
+    const { isAuthenticated, authLoading, navigate } = useContext(AuthContext);
     
     useEffect(() => {
-        if (!isAuthenticated)
+        if (!authLoading && !isAuthenticated)
             navigate("/", { replace: true });
     }, [isAuthenticated, navigate]);
 

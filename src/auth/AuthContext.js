@@ -6,17 +6,23 @@ const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [authLoading, setAuthLoading] = useState(true);
     const authMyFacebookKey = "MyFacebook:auth_allowed";
     const navigate = useNavigate();
 
     useEffect(() => {
         try {
             const authInfo = JSON.parse(localStorage.getItem(authMyFacebookKey));
-            if (authInfo && authInfo.accessToken) 
+            if (authInfo && authInfo.accessToken) {
+                console.log("auth check");
                 setIsAuthenticated(true);
+            }
         }
         catch(error) {
             console.log(error);
+        }
+        finally {
+            setAuthLoading(false);
         }
     }, []);
 
@@ -24,6 +30,7 @@ export const AuthProvider = ({ children }) => {
         <AuthContext.Provider
             value={{
                 isAuthenticated,
+                authLoading,
                 navigate,
                 login: async (username, password) => {
                     const api_url = process.env.REACT_APP_API_BASE_URL + "/login";

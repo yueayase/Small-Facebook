@@ -24,7 +24,9 @@ const ForgotPasswordLinkStyle = {
 
 const LoginFailedPage = () => {
     const location = useLocation();
-    const { error_code, username } = location.state
+    // To avoid destructing null or undefined => use ??
+    // See https://stackoverflow.com/questions/74200517/typeerror-cannot-destructure-property-image-of-product-as-it-is-null-tutor
+    const { error_code, username } = location.state ?? {};
     const [cellPhoneOrEmail, setcellPhoneOrEmail] = useState(username);
     const [password, setPassword] = useState("");
     const [currentError, setCurrentError] = useState(error_code);

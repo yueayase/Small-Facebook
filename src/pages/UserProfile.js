@@ -1,21 +1,22 @@
 import React, { useContext, useEffect } from "react";
 import AuthContext from "../auth/AuthContext";
-import DefaultLayout from "../components/layout/DefaultLayout";
-import ClearFix from "../common/ClearFix";
+import UserProfileDefaultLayout from "../components/UserProfile/UserProfileDefaultLayout";
+
 
 const UserProfile = () => {
-    const { isAuthenticated, navigate } = useContext(AuthContext);
+    const { isAuthenticated, authLoading, navigate } = useContext(AuthContext);
 
     useEffect(() => {
-        if (!isAuthenticated)
+        if (!authLoading && !isAuthenticated){
+            console.log("redirect to HomePage", isAuthenticated);
             navigate("/", { replace: true });
-    }, [isAuthenticated, navigate]);
+        }
+    }, [isAuthenticated, authLoading, navigate]);
 
     return (
-        <DefaultLayout>
-            <ClearFix />
+        <UserProfileDefaultLayout>
             This is your personal profile.
-        </DefaultLayout>
+        </UserProfileDefaultLayout>
     );
 };
 
