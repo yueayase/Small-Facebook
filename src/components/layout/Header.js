@@ -42,7 +42,7 @@ const HeaderEndStyle = styled.div`
     display: flex;
     justify-content: end;
     align-items: center;
-    padding: 0 16px;
+    padding: 0 32px;
 
     & > *:not(:last-child) {
         padding-right: 24px;
@@ -126,26 +126,18 @@ const BoxContent = ({ children }) => {
 };
 
 const Header = () => {
-    const [showMessenger, setShowMessenger] = useState(false);
-    const [showNotification, setShowNotification] = useState(false);
-    const [showUserCustom, setShowUserCustom] = useState(false);
-
-    const handleMessenger = () => {
-        setShowMessenger(!showMessenger);
-        setShowUserCustom(false);
-        setShowNotification(false);
-    }
-
-    const handleNotify = () => {
-        setShowNotification(!showNotification);
-        setShowUserCustom(false);
-        setShowMessenger(false);
-    }
-
-    const handleUserCustom = () => {
-        setShowUserCustom(!showUserCustom);
-        setShowNotification(false);
-        setShowMessenger(false);
+    const userFunctions = [<Messenger />, <Notification />, <LinkToUserCustom />];
+    const [functionClick, setFunctionClick] = useState(userFunctions.length);
+    const [showBox, setShowBox] = useState(false);
+   
+    const handleFunctionClick = (userClick) => {
+        if (functionClick !== userClick) {
+            setFunctionClick(userClick);
+            setShowBox(true);
+        }
+        else {
+            setShowBox(!showBox);
+        }
     }
 
     return (
@@ -170,9 +162,15 @@ const Header = () => {
                 </Col>
                 <Col lg={3}>
                     <HeaderEndStyle>
-                        <FontAwesomeIconStyle icon={fab.faFacebookMessenger} onClick={handleMessenger}/>
-                        <FontAwesomeIconStyle icon={fas.faBell} onClick={handleNotify}/>
-                        <UserIconStyle onClick={handleUserCustom}>
+                        <FontAwesomeIconStyle 
+                            icon={fab.faFacebookMessenger} 
+                            onClick={() => handleFunctionClick(0)}
+                        />
+                        <FontAwesomeIconStyle 
+                            icon={fas.faBell} 
+                            onClick={() => handleFunctionClick(1)}
+                        />
+                        <UserIconStyle onClick={() => handleFunctionClick(2)}>
                             <Image 
                                 src={DefaultMaleUser}
                                 alt="default"
@@ -183,9 +181,7 @@ const Header = () => {
                     </HeaderEndStyle>
                 </Col>
             </Row>
-            {showUserCustom && <BoxContent><LinkToUserCustom /></BoxContent>}
-            {showMessenger && <BoxContent><Messenger /></BoxContent>}
-            {showNotification && <BoxContent><Notification /></BoxContent>}
+            {showBox && <BoxContent>{userFunctions[functionClick]}</BoxContent>}
         </HeaderStyle>
     );
 };

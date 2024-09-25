@@ -19,7 +19,7 @@ const LinkStyle = styled(Link)`
 
 
 const LinkToUserCustom = () => {
-    const { logout } = useContext(AuthContext);
+    const { username, logout } = useContext(AuthContext);
     const authMyFacebookKey = "MyFacebook:auth_allowed";
     const userInfo = JSON.parse(localStorage.getItem(authMyFacebookKey));
 
@@ -27,7 +27,7 @@ const LinkToUserCustom = () => {
         <div>
             <LinkStyle to={`/${userInfo.url}`}>
                 <UserCustomDivStyle>
-                    {userInfo.name}
+                    {username}
                 </UserCustomDivStyle>
             </LinkStyle>
             <LinkStyle to="/setting">

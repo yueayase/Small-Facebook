@@ -7,23 +7,41 @@ const AuthContext = createContext(null);
 export const AuthProvider = ({ children }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [authLoading, setAuthLoading] = useState(true);
+    const [username, setUsername] = useState("");
+    const [userCoverImage, setUserCoverImage] = useState("");
+    const [userIcon, setUserIcon] = useState("");
     const authMyFacebookKey = "MyFacebook:auth_allowed";
     const navigate = useNavigate();
 
     useEffect(() => {
-        try {
-            const authInfo = JSON.parse(localStorage.getItem(authMyFacebookKey));
-            if (authInfo && authInfo.accessToken) {
-                console.log("auth check");
-                setIsAuthenticated(true);
+        // TODO: use api to get username, user cover image, user icon image
+        const syncUserAuthInformation = async () => {
+            try {
+                const authInfo = JSON.parse(localStorage.getItem(authMyFacebookKey));
+                if (authInfo && authInfo.accessToken) {
+                    console.log("auth check");
+                    const api_url = process.env.REACT_APP_API_BASE_URL + `/user/${authInfo.id}/profile`;
+                    const res = await axios.get(api_url);
+                    const { name, coverImage, userIcon } = res.data;
+
+                    setIsAuthenticated(true);
+                    setUsername(name);
+                    setUserCoverImage(coverImage);
+                    setUserIcon(userIcon);
+
+                    console.log("test", userCoverImage);
+                }
+                
+            }
+            catch(error) {
+                console.log(error);
+            }
+            finally {
+                setAuthLoading(false);
             }
         }
-        catch(error) {
-            console.log(error);
-        }
-        finally {
-            setAuthLoading(false);
-        }
+        
+        syncUserAuthInformation();
     }, []);
 
     return (
@@ -31,6 +49,9 @@ export const AuthProvider = ({ children }) => {
             value={{
                 isAuthenticated,
                 authLoading,
+                username,
+                userCoverImage,
+                userIcon,
                 navigate,
                 login: async (username, password) => {
                     const api_url = process.env.REACT_APP_API_BASE_URL + "/login";
@@ -41,18 +62,22 @@ export const AuthProvider = ({ children }) => {
                             password: password 
                         });
 
-                        localStorage.setItem(authMyFacebookKey, JSON.stringify(res.data));
+                        const { name, genderAlias, ...userStaticInfo } = res.data;
+                        setUsername(name);
+
+                        localStorage.setItem(authMyFacebookKey, JSON.stringify(userStaticInfo));
                         setIsAuthenticated(true);
 
                         return { error_code: null };
                     }
                     catch(error) {
                         setIsAuthenticated(false);
-                        return { error_code: error.response.status};
+                        return { error_code: error.response.status };
                     }
                 },
                 logout: () => {
                     setIsAuthenticated(false);
+                    setUsername("");
                     localStorage.removeItem(authMyFacebookKey);
                     navigate("/", { replace: true }); // redirect to the HomePage
                 }
