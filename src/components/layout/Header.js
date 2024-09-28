@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
+import AuthContext from '../../auth/AuthContext';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { Link } from 'react-router-dom';
@@ -7,8 +8,6 @@ import Image from 'react-bootstrap/Image';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { fab } from '@fortawesome/free-brands-svg-icons';
 import { fas } from "@fortawesome/free-solid-svg-icons";
-import DefaultMaleUser from '../../images/anonymous-avatars-grey-circles/anonymous_avatars_grey_circles_male1.jpg';
-import DefaultFemaleUser from '../../images/anonymous-avatars-grey-circles/anonymous_avatars_grey_circles_female1.jpg'
 import LinkToUserCustom from '../Header/LinkToUserCustom';
 import styled from 'styled-components';
 
@@ -127,6 +126,7 @@ const BoxContent = ({ children }) => {
 
 const Header = () => {
     const userFunctions = [<Messenger />, <Notification />, <LinkToUserCustom />];
+    const { userIcon } = useContext(AuthContext);
     const [functionClick, setFunctionClick] = useState(userFunctions.length);
     const [showBox, setShowBox] = useState(false);
    
@@ -172,9 +172,10 @@ const Header = () => {
                         />
                         <UserIconStyle onClick={() => handleFunctionClick(2)}>
                             <Image 
-                                src={DefaultMaleUser}
+                                src={userIcon}
                                 alt="default"
                                 width={36}
+                                height={36}
                                 style={{borderRadius: "50%"}}
                             />
                         </UserIconStyle>

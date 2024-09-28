@@ -5,7 +5,6 @@ import axios from 'axios';
 import DefaultLayout from '../layout/DefaultLayout';
 import ClearFix from '../../common/ClearFix';
 import Button from 'react-bootstrap/Button';
-import DefaultMaleUser from '../../images/anonymous-avatars-grey-circles/anonymous_avatars_grey_circles_male1.jpg'
 
 
 const UserProfileSettingSectionStyle = styled.div`
@@ -18,6 +17,8 @@ const UserCoverImageStyle = styled.div`
     width: 75%;
     height: 456px;
     background-color: #242526;
+    background-size: contain;
+    background-repeat: no-repeat;
     margin: 0 auto;
     ${({ img_url }) => img_url && `background-image: url(${img_url});`}
 `;
@@ -49,7 +50,8 @@ const UserIconStyle = styled.div`
     border-radius: 50%;
     background-image: url(${({ img_url }) => img_url});
     background-position-x: 50%;
-    background-size: cover;
+    background-size: contain;
+    background-repeat: no-repeat;
 `;
 
 const UploadUserIconStyle = styled.input`
@@ -132,7 +134,7 @@ const UserProfileDefaultLayout = ({ children }) => {
                 }
             })
             .then(res => {
-                console.log("upload successfully");
+                console.log("upload cover image successfully");
             })
             .catch(error => {
                 console.log("something wrong", error);
@@ -144,7 +146,24 @@ const UserProfileDefaultLayout = ({ children }) => {
         console.log("Uploading the user icon...");
         const formData = new FormData();
         if (e.target.files.length > 0) {
-            console.log(`file name: ${e.target.files[0].name}`);
+            const api_url = process.env.REACT_APP_API_BASE_URL + "/upload/user_icon";
+            const authMyFacebookKey = "MyFacebook:auth_allowed";
+            const { url } = JSON.parse(localStorage.getItem(authMyFacebookKey));
+
+            formData.append("userUrl", url);
+            formData.append("user_icon", e.target.files[0], e.target.files[0].name);
+            console.log(formData.getAll("user_icon"));
+            axios.post(api_url, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            })
+            .then(res => {
+                console.log("upload user icon successfully");
+            })
+            .catch(error => {
+                console.log("something wrong", error);
+            });
         }
     };
 
@@ -156,7 +175,7 @@ const UserProfileDefaultLayout = ({ children }) => {
                     <UserUploadCoverImageStyle type="file" onChange={handleUploadCoverImage} />
                 </UserCoverImageStyle>
                 <UserIconAndEditSectionStyle>
-                    <UserIconStyle img_url={DefaultMaleUser}>
+                    <UserIconStyle img_url={userIcon}>
                         <UploadUserIconStyle type="file" onChange={handleUploadUserIcon}/>
                     </UserIconStyle>
                     <UserProfileEditSectionStyle>

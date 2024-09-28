@@ -14,7 +14,6 @@ export const AuthProvider = ({ children }) => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        // TODO: use api to get username, user cover image, user icon image
         const syncUserAuthInformation = async () => {
             try {
                 const authInfo = JSON.parse(localStorage.getItem(authMyFacebookKey));
@@ -29,7 +28,8 @@ export const AuthProvider = ({ children }) => {
                     setUserCoverImage(coverImage);
                     setUserIcon(userIcon);
 
-                    console.log("test", userCoverImage);
+                    console.log("test1", userCoverImage);
+                    console.log("test2", userIcon);
                 }
                 
             }
