@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import axios from 'axios';
 import DefaultLayout from '../layout/DefaultLayout';
 import ClearFix from '../../common/ClearFix';
+import Image from 'react-bootstrap/Image';
 import Button from 'react-bootstrap/Button';
 
 
@@ -17,8 +18,7 @@ const UserCoverImageStyle = styled.div`
     width: 75%;
     height: 456px;
     background-color: #242526;
-    background-size: contain;
-    background-repeat: no-repeat;
+    background-size: cover;
     margin: 0 auto;
     ${({ img_url }) => img_url && `background-image: url(${img_url});`}
 `;
@@ -43,15 +43,44 @@ const UserIconAndEditSectionStyle = styled.div`
     display: flex;
 `;
 
+// const UserIconStyle = styled.div`
+//     top: -30px;
+//     width: 180px;
+//     height: 180px;
+//     border-radius: 50%;
+//     background-image: url(${({ img_url }) => img_url});
+//     background-position-x: 50%;
+//     background-size: contain;
+//     background-repeat: no-repeat;
+// `;
+
 const UserIconStyle = styled.div`
+    user-select: none;
+    -moz-user-select: none;  /* Mozilla-specific values */
+    -webkit-user-select: none;   /* WebKit-specific values */
+
+    position: relative;
     top: -30px;
     width: 180px;
     height: 180px;
-    border-radius: 50%;
-    background-image: url(${({ img_url }) => img_url});
-    background-position-x: 50%;
-    background-size: contain;
-    background-repeat: no-repeat;
+    border-radius: 50%; 
+
+`;
+
+const UserIconImageStyle = styled(Image)`
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    border-radius: 50%; 
+
+    /* This olution is from: */
+    /* https://stackoverflow.com/questions/54133910/why-does-my-active-selector-lose-its-click-event-state-on-scale-tranformation */
+    ${UserIconStyle}:active & {
+        transform: scale(0.8);  /* Shrinks the inner image, not the outer div */
+        transition: all 0.2s;
+    }
 `;
 
 const UploadUserIconStyle = styled.input`
@@ -59,7 +88,7 @@ const UploadUserIconStyle = styled.input`
     width: 100%;
     height: 100%;
     top: 0;
-    left:0;
+    left: 0;
     border-radius: 50%; /* because the parent div is a circle*/
     opacity: 0;
 `;
@@ -114,6 +143,7 @@ const UserProfileNavbarStyle = styled.div`
 const UserProfileDefaultLayout = ({ children }) => {
     const { username, userCoverImage, userIcon } = useContext(AuthContext);
 
+    // Reference: https://omarshishani.com/how-to-upload-images-to-server-with-react-and-express/
     const handleUploadCoverImage = (e) => {
         console.log("Uploading the cover image...");
         const formData = new FormData();
@@ -175,7 +205,11 @@ const UserProfileDefaultLayout = ({ children }) => {
                     <UserUploadCoverImageStyle type="file" onChange={handleUploadCoverImage} />
                 </UserCoverImageStyle>
                 <UserIconAndEditSectionStyle>
-                    <UserIconStyle img_url={userIcon}>
+                    <UserIconStyle>
+                        <UserIconImageStyle 
+                            src={userIcon}
+                            alt="default"
+                        />
                         <UploadUserIconStyle type="file" onChange={handleUploadUserIcon}/>
                     </UserIconStyle>
                     <UserProfileEditSectionStyle>

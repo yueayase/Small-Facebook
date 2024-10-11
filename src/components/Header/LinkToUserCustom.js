@@ -38,7 +38,7 @@ const LinkToUserCustom = () => {
             <UserCustomDivStyle>
                 顯示方式與無障礙環境
             </UserCustomDivStyle>
-            <UserCustomDivStyle onClick={() => logout()}>
+            <UserCustomDivStyle onClick={(e) => { e.stopPropagation(); logout(); }}>
                 登出
             </UserCustomDivStyle>
         </div>

@@ -1,5 +1,7 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, forwardRef } from 'react';
 import AuthContext from '../../auth/AuthContext';
+import { useOutsideClick } from '../../hooks/useOutsideClick';
+import LinkToUserCustom from '../Header/LinkToUserCustom';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { Link } from 'react-router-dom';
@@ -8,7 +10,6 @@ import Image from 'react-bootstrap/Image';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { fab } from '@fortawesome/free-brands-svg-icons';
 import { fas } from "@fortawesome/free-solid-svg-icons";
-import LinkToUserCustom from '../Header/LinkToUserCustom';
 import styled from 'styled-components';
 
 const HeaderStyle = styled.header`
@@ -116,19 +117,25 @@ const Notification = () => {
 
 
 
-const BoxContent = ({ children }) => {
+const BoxContent = forwardRef(({ children }, ref) => {
     return (
-        <BoxContentStyle>
+        <BoxContentStyle ref={ref}>
             {children}
         </BoxContentStyle>
     );
-};
+});
 
 const Header = () => {
     const userFunctions = [<Messenger />, <Notification />, <LinkToUserCustom />];
     const { userIcon } = useContext(AuthContext);
     const [functionClick, setFunctionClick] = useState(userFunctions.length);
     const [showBox, setShowBox] = useState(false);
+
+    const handleOutsideClick = () => {
+        setShowBox(false);
+    };
+
+    const ref = useOutsideClick(handleOutsideClick);
    
     const handleFunctionClick = (userClick) => {
         if (functionClick !== userClick) {
@@ -138,7 +145,11 @@ const Header = () => {
         else {
             setShowBox(!showBox);
         }
-    }
+    };
+
+    const handleHeaderEndClick = (e) => {
+        e.stopPropagation();
+    };
 
     return (
         <HeaderStyle>
@@ -161,13 +172,13 @@ const Header = () => {
                     </HeaderMiddleStyle>
                 </Col>
                 <Col lg={3}>
-                    <HeaderEndStyle>
+                    <HeaderEndStyle onClick={handleHeaderEndClick}>
                         <FontAwesomeIconStyle 
                             icon={fab.faFacebookMessenger} 
                             onClick={() => handleFunctionClick(0)}
                         />
                         <FontAwesomeIconStyle 
-                            icon={fas.faBell} 
+                            icon={fas.faBell}
                             onClick={() => handleFunctionClick(1)}
                         />
                         <UserIconStyle onClick={() => handleFunctionClick(2)}>
@@ -182,7 +193,7 @@ const Header = () => {
                     </HeaderEndStyle>
                 </Col>
             </Row>
-            {showBox && <BoxContent>{userFunctions[functionClick]}</BoxContent>}
+            {showBox && <BoxContent ref={ref}>{userFunctions[functionClick]}</BoxContent>}
         </HeaderStyle>
     );
 };

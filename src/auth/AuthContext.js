@@ -28,8 +28,8 @@ export const AuthProvider = ({ children }) => {
                     setUserCoverImage(coverImage);
                     setUserIcon(userIcon);
 
-                    console.log("test1", userCoverImage);
-                    console.log("test2", userIcon);
+                    // console.log("test1", userCoverImage);
+                    // console.log("test2", userIcon);
                 }
                 
             }
