@@ -1,4 +1,3 @@
-import logo from './logo.svg';
 import { BrowserRouter, Routes, Route } from 'react-router-dom'; 
 import { AuthProvider } from './auth/AuthContext';
 import GlobalStyle from './styles/GlobalStyles';

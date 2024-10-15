@@ -4,7 +4,7 @@ import LoginPage from './LoginPage';
 import AuthContext from '../auth/AuthContext';
 
 const HomePage = () => {
-    const { login, isAuthenticated } = useContext(AuthContext);
+    const { isAuthenticated } = useContext(AuthContext);
 
     return isAuthenticated ? <MainPage /> : <LoginPage />;
 

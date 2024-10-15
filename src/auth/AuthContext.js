@@ -62,11 +62,16 @@ export const AuthProvider = ({ children }) => {
                             password: password 
                         });
 
-                        const { name, genderAlias, ...userStaticInfo } = res.data;
-                        setUsername(name);
+                        const { name, genderAlias, coverImage, userIcon, ...userStaticInfo } = res.data;
 
                         localStorage.setItem(authMyFacebookKey, JSON.stringify(userStaticInfo));
+                        console.log("test login...")
                         setIsAuthenticated(true);
+                        setUsername(name);
+                        setUserCoverImage(coverImage);
+                        console.log("coverImage", coverImage)
+                        setUserIcon(userIcon);
+                        console.log("userIcon", userIcon);
 
                         return { error_code: null };
                     }
