@@ -141,22 +141,29 @@ const UserProfileNavbarStyle = styled.div`
 `;
 
 const UserProfileDefaultLayout = ({ children }) => {
-    const { username, userCoverImage, userIcon } = useContext(AuthContext);
+    const { 
+        username, 
+        userCoverImage, 
+        setUserCoverImage, 
+        userIcon, 
+        setUserIcon 
+    } = useContext(AuthContext);
 
     // Reference: https://omarshishani.com/how-to-upload-images-to-server-with-react-and-express/
     const handleUploadCoverImage = (e) => {
         console.log("Uploading the cover image...");
-        const formData = new FormData();
         if (e.target.files.length > 0){
             const api_url = process.env.REACT_APP_API_BASE_URL + "/upload/cover_image";
             const authMyFacebookKey = "MyFacebook:auth_allowed";
             const { url } = JSON.parse(localStorage.getItem(authMyFacebookKey));
+            const formData = new FormData();
+            const file = e.target.files[0];
 
             // Be careful of the order of the append because it won't deal with those 
             // fields after file object until the file is successfully uploaded 
             // See: https://medium.com/@muh__hizbullah/multer-req-body-null-object-when-send-file-with-other-field-string-using-formdata-b275b4364404 
             formData.append("userUrl", url);
-            formData.append("cover_image", e.target.files[0], e.target.files[0].name);
+            formData.append("cover_image", file, file.name);
             console.log(formData.getAll("cover_image"));
             axios.post(api_url, formData, {
                 headers: {
@@ -164,6 +171,12 @@ const UserProfileDefaultLayout = ({ children }) => {
                 }
             })
             .then(res => {
+                let reader = new FileReader();
+
+                reader.readAsDataURL(file);
+                reader.onload = () => {
+                    setUserCoverImage(reader.result);
+                }
                 console.log("upload cover image successfully");
             })
             .catch(error => {
@@ -174,14 +187,15 @@ const UserProfileDefaultLayout = ({ children }) => {
 
     const handleUploadUserIcon = (e) => {
         console.log("Uploading the user icon...");
-        const formData = new FormData();
         if (e.target.files.length > 0) {
             const api_url = process.env.REACT_APP_API_BASE_URL + "/upload/user_icon";
             const authMyFacebookKey = "MyFacebook:auth_allowed";
             const { url } = JSON.parse(localStorage.getItem(authMyFacebookKey));
+            const formData = new FormData();
+            const file = e.target.files[0];
 
             formData.append("userUrl", url);
-            formData.append("user_icon", e.target.files[0], e.target.files[0].name);
+            formData.append("user_icon", file, file.name);
             console.log(formData.getAll("user_icon"));
             axios.post(api_url, formData, {
                 headers: {
@@ -189,6 +203,14 @@ const UserProfileDefaultLayout = ({ children }) => {
                 }
             })
             .then(res => {
+                // See: https://molly1024.medium.com/react%E5%B0%88%E6%A1%88%E4%B8%ADinput%E4%B8%8A%E5%82%B3%E6%AA%94%E6%A1%88%E4%B8%A6%E4%BB%A5base64%E6%AA%A2%E8%A6%96-3f4df797465e 
+                let reader = new FileReader();
+
+                reader.readAsDataURL(file);
+                reader.onload = () => {
+                    setUserIcon(reader.result);
+                }
+
                 console.log("upload user icon successfully");
             })
             .catch(error => {

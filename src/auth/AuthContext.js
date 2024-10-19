@@ -85,7 +85,9 @@ export const AuthProvider = ({ children }) => {
                     setUsername("");
                     localStorage.removeItem(authMyFacebookKey);
                     navigate("/", { replace: true }); // redirect to the HomePage
-                }
+                },
+                setUserCoverImage,
+                setUserIcon
             }}
         >
             {children}
