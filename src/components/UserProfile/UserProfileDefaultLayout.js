@@ -138,9 +138,41 @@ const UserProfileNavbarStyle = styled.div`
     height: 60px;
     color: #fff;
     margin: 0 auto;
+    
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 `;
 
-const UserProfileDefaultLayout = ({ children }) => {
+const NavbarTagsStyle = styled.ul`
+    list-style-type: none;
+    display: flex;
+    padding-top: 28px;
+    padding-left: 0px;
+`;
+
+const NavbarTagStyle = styled.li`
+    padding: 16px 20px;
+    color: ${({ highlighted }) => highlighted ? '#0866ff' : '#e2e5e9'};
+
+    user-select:none; /* standard syntax */
+    -webkit-user-select:none; /* for Chrome、Safari */
+    -moz-user-select:none;  /* for Mozilla、Firefox */
+    
+    &:hover {
+        background-color: ${({ highlighted }) => highlighted ? 'inherit' : '#84878b'};
+        cursor: pointer;
+    }
+`;
+
+const TagUnderlineStyle = styled.div`
+    width: 100%;
+	border-bottom: solid 4px #0866ff;
+    margin-top: 12px;
+    top: -5px;
+`;
+
+const UserProfileDefaultLayout = ({ children, currentTag, setCurrentTag }) => {
     const { 
         username, 
         userCoverImage, 
@@ -148,6 +180,7 @@ const UserProfileDefaultLayout = ({ children }) => {
         userIcon, 
         setUserIcon 
     } = useContext(AuthContext);
+    const tags = ["貼文", "關於", "朋友", "相片", "影片", "社團"];
 
     // Reference: https://omarshishani.com/how-to-upload-images-to-server-with-react-and-express/
     const handleUploadCoverImage = (e) => {
@@ -251,7 +284,23 @@ const UserProfileDefaultLayout = ({ children }) => {
                 <FriendsSuggestionSectionStyle></FriendsSuggestionSectionStyle>
                 <LineStyle />
                 <UserProfileNavbarStyle>
-                    User Navbar Here.
+                    <NavbarTagsStyle>
+                        {
+                            tags.map((tag, index) => (
+                                <div>
+                                     <NavbarTagStyle 
+                                        highlighted={index === currentTag} 
+                                        onClick={() => setCurrentTag(index)}
+                                    >
+                                      {tag}
+                                    </NavbarTagStyle>
+                                    {(index === currentTag) && <TagUnderlineStyle />}
+                                </div>
+                               ) 
+                            )
+                        }
+                    </NavbarTagsStyle>
+                    <div>...</div>
                 </UserProfileNavbarStyle>
             </UserProfileSettingSectionStyle>
             {children}
